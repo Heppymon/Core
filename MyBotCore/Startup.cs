@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyBotCore.Jobs;
 using MyBotCore.Services;
 using MyBotCore.Shared.Interfaces.Services;
 using MyBotCore.Shared.Settings;
 using MyBotDb;
-using Npgsql;
 using Quartz;
 using System.Reflection;
 
@@ -105,18 +103,8 @@ namespace MyBotCore
 
             if (string.IsNullOrWhiteSpace(cs))
             {
-                var dbConfig = Configuration.GetSection("DbSettings").Get<DbSettings>();
-                var builder = new NpgsqlConnectionStringBuilder
-                {
-                    Host = "", //herokuDbConf.Host,
-                    Port = 5432, //herokuDbConf.Port,
-                    Username = "", //herokuDbConf.Username,
-                    Password = "", //herokuDbConf.Password,
-                    Database = "", //herokuDbConf.Database,
-                    SslMode = SslMode.Disable, //herokuDbConf.SslMode,
-                    TrustServerCertificate = true, //herokuDbConf.TrustServerCertificate
-                };
-                cs = builder.ToString();
+                var dbConfig = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
+                cs = dbConfig.PostgresDb;
             }
 
             services.AddDbContext<MyBotContext>(options => options.UseNpgsql(cs));

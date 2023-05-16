@@ -30,14 +30,14 @@ deploy:
     steps:
       - uses: actions/checkout@v2
       - name: copy file via ssh password
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.GHA_DEPLOY_IP }}
-        username: ${{ secrets.GHA_DEPLOY_SSH_LOGIN }}
-        key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
-        port: "22" # ${{ secrets.PORT }}
-        source: "Server/"
-        target: "/"
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.GHA_DEPLOY_IP }}
+          username: ${{ secrets.GHA_DEPLOY_SSH_LOGIN }}
+          key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
+          port: "22" # ${{ secrets.PORT }}
+          source: "Server/"
+          target: "/"
       - uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MyBotCore.Jobs;
 using MyBotCore.Services;
@@ -21,17 +22,16 @@ namespace MyBotCore
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<BotSettings>(Configuration.GetSection("BotSettings"));
-            services.AddScoped<ITgBotService, TgBotService>();
 
+            ConfigureSettings(services);
             ConfigureSwagger(services);
             // ConfigureQuartz(services);
             ConfigureDatabase(services);
+            ConfigureInternalServices(services);
+
 
             services.AddControllers();
         }
-
-
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -44,7 +44,7 @@ namespace MyBotCore
             //app.UseHsts();
             app.UseStaticFiles();
             app.UseRouting();
-            // app.UseMigration();
+            app.UseMigration();
             app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -54,6 +54,18 @@ namespace MyBotCore
                 // endpoints.MapHealthChecks("/health");
                 // endpoints.MapMetrics("/metrics");
             });
+        }
+
+        private void ConfigureSettings(IServiceCollection services)
+        {
+            services.Configure<BotSettings>(Configuration.GetSection("BotSettings"));
+            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.Configure<QuartzSettings>(Configuration.GetSection("QuartzSettings"));
+        }
+
+        private void ConfigureInternalServices(IServiceCollection services)
+        {
+            services.AddScoped<ITgBotService, TgBotService>();
         }
 
         private void ConfigureQuartz(IServiceCollection services)
@@ -102,10 +114,7 @@ namespace MyBotCore
             var cs = Configuration.GetConnectionString("TgbotDatabase");
 
             if (string.IsNullOrWhiteSpace(cs))
-            {
-                var dbConfig = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>();
-                cs = dbConfig.PostgresDb;
-            }
+                cs = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>().PostgresDb;
 
             services.AddDbContext<MyBotContext>(options => options.UseNpgsql(cs));
         }

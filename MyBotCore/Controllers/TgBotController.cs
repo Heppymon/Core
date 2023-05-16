@@ -17,7 +17,6 @@ namespace MyBotCore.Controllers
             this.handleUpdateService = handleUpdateService;
         }
 
-
         [HttpPost("HookPost")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> Post([FromBody] Update update)

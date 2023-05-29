@@ -6,6 +6,10 @@ This is my own development, many technologies that I had to deal with in my work
 
 Here will be a description of root services, adapters and controllers
 
+### Docker
+
+Description of the Dokerfiles and the launch of the project
+
 # Architecture
 
 There will be a link to miro with a ready-made architecture when the project is at the "visualization required" stage. Until then, I do not see the point in preparing a scheme, since I do not know in advance with which libraries and in what form it will work.

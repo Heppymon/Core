@@ -61,6 +61,7 @@ namespace MyBotCore
             services.Configure<BotSettings>(Configuration.GetSection("BotSettings"));
             services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<QuartzSettings>(Configuration.GetSection("QuartzSettings"));
+            services.Configure<OpenAiSettings>(Configuration.GetSection("OpenAiSettings"));
         }
 
         private void ConfigureInternalServices(IServiceCollection services)

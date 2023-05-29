@@ -1,3 +1,4 @@
+using MyBotCore.Shared.Settings;
 using Serilog;
 using Serilog.Configuration;
 

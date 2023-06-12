@@ -34,13 +34,14 @@ jobs:
         with:
           host: ${{ secrets.GHA_DEPLOY_IP }}
           username: ${{ secrets.GHA_DEPLOY_SSH_LOGIN }}
-          key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
+          # key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
+          password: ${{ secrets.GHA_PASSWORD }}
           port: "22" # ${{ secrets.PORT }}
           source: "Server/"
           target: "/home/tgbot"
-      - uses: webfactory/ssh-agent@v0.5.4
-        with:
-          ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
+     # - uses: webfactory/ssh-agent@v0.5.4
+     #     with:
+     #     ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
           
       - name: Disable Host key verification
         # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution

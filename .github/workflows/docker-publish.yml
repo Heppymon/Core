@@ -37,7 +37,7 @@ jobs:
           key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
           port: "22" # ${{ secrets.PORT }}
           source: "Server/"
-          target: "/"
+          target: "/home/tgbot"
       - uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}

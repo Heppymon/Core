@@ -26,6 +26,7 @@ jobs:
           push: true
           tags: heppymon/mytgbot:latest
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Create SSH key

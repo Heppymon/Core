@@ -20,6 +20,7 @@ namespace MyBotCore
             InitializeLogger(config);
             try
             {
+                Log.Information($"TgBot starting on {environment} environment.");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

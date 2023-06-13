@@ -39,7 +39,7 @@ services:
 
   db:
     container_name: tgbotdb
-    image: postgres:latest
+    image: postgres:15.1-alpine3.17
     environment:
       - POSTGRES_PASSWORD=TgChatBot99
       - POSTGRES_USER=botUser
@@ -51,7 +51,7 @@ services:
     ports:
       - mode: host
         protocol: tcp
-        published: 5544
+        published: 5432
         target: 5432
     networks:
       - tgbot

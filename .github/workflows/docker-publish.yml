@@ -39,8 +39,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{secrets.GHA_DEPLOY_SSH_PRIVATE_KEY}}
           SSH_KNOWN_HOSTS: ${{secrets.GHA_KNOWN_HOSTS}}
           SSH_KEY_PATH: ${{ github.workspace }}/../private.key
-          
-          
+      
       - uses: actions/checkout@v2
       - name: copy file via ssh password
         uses: appleboy/scp-action@master
@@ -50,10 +49,10 @@ jobs:
           key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
           port: "22" # ${{ secrets.PORT }}
           source: "Server/"
-          target: "/home/tgbot"
-     # - uses: webfactory/ssh-agent@v0.5.4
-     #     with:
-     #     ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
+          target: "~/tgbot"
+      - uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
           
       - name: Disable Host key verification
         # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution

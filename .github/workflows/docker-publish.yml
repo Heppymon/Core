@@ -28,6 +28,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$GHA_DEPLOY_SSH_PRIVATE_KEY" > ../private.key
+          sudo chmod 600 ../private.key
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.GHA_DEPLOY_SSH_PRIVATE_KEY}}
+          SSH_KNOWN_HOSTS: ${{secrets.GHA_KNOWN_HOSTS}}
+          SSH_KEY_PATH: ${{ github.workspace }}/../private.key
+      
       - uses: actions/checkout@v2
       - name: copy file via ssh password
         uses: appleboy/scp-action@master
@@ -37,7 +49,7 @@ jobs:
           key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}
           port: "22" # ${{ secrets.PORT }}
           source: "Server/"
-          target: "/"
+          target: "~/tgbot"
       - uses: webfactory/ssh-agent@v0.5.4
         with:
           ssh-private-key: ${{ secrets.GHA_DEPLOY_SSH_PRIVATE_KEY }}

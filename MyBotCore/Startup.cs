@@ -38,16 +38,25 @@ namespace MyBotCore
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
+            // Add exception middleware, 1st row!
+            // app.UseMiddleware<ExceptionMiddleware>();
+
+
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "TGbotManager v1"));
             //app.UseHttpsRedirection();
             //app.UseHsts();
-            app.UseStaticFiles();
-            app.UseRouting();
+
+
             app.UseMigration();
-            app.UseCors();
+            app.UseCors("AllowAll");
+
             app.UseAuthentication();
+            app.UseRouting();
             app.UseAuthorization();
+
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

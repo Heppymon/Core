@@ -1,10 +1,38 @@
-name: DockerHub
+name: TestPipeline
+
+on:  
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      current:
+        dotnet-version: [ '6.0.402' ]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Core SDK ${{ current.dotnet-version }}
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: ${{ current.dotnet-version }}     
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+
+name: MainPipeline
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -25,6 +53,7 @@ jobs:
           context: .
           push: true
           tags: heppymon/mytgbot:latest
+
   deploy:
     needs: build
     runs-on: ubuntu-latest

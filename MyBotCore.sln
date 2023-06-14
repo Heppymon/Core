@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBotCore", "MyBotCore\MyBotCore.csproj", "{DAE3F059-06E2-456B-9E3C-4D88F99F1EDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBotCore", "MyBotCore\MyBotCore.csproj", "{DAE3F059-06E2-456B-9E3C-4D88F99F1EDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyBotDb", "MyBotDb\MyBotDb.csproj", "{FAA2C468-797C-4E0E-9D26-92E3008AF13D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyBotDb", "MyBotDb\MyBotDb.csproj", "{FAA2C468-797C-4E0E-9D26-92E3008AF13D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{59AEFF58-105C-43F8-AB13-5A5E6DBA6A4E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{FAA2C468-797C-4E0E-9D26-92E3008AF13D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAA2C468-797C-4E0E-9D26-92E3008AF13D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAA2C468-797C-4E0E-9D26-92E3008AF13D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59AEFF58-105C-43F8-AB13-5A5E6DBA6A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59AEFF58-105C-43F8-AB13-5A5E6DBA6A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59AEFF58-105C-43F8-AB13-5A5E6DBA6A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59AEFF58-105C-43F8-AB13-5A5E6DBA6A4E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

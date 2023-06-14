@@ -6,7 +6,7 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-#      - ./certs:/etc/letsencrypt/live/tgbot.ru:ro
+      - /etc/letsencrypt/live/heppymonbot.ru:/etc/letsencrypt/live/heppymonbot.ru:ro
     ports:
       - mode: host
         protocol: tcp

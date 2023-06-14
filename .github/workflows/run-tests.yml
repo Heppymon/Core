@@ -2,22 +2,20 @@ name: CheckTests
 
 on:  
   pull_request:
-    branches: [ master ]
+    branches: [ "main" ]
+
+env:
+  dotnet-version: '6.0.402'
 
 jobs:
-  build:
-
+  RunTests:
     runs-on: ubuntu-latest
-    strategy:
-      current:
-        dotnet-version: [ '6.0.402' ]
-
     steps:
       - uses: actions/checkout@v3
-      - name: Setup .NET Core SDK ${{ current.dotnet-version }}
+      - name: Setup .NET Core SDK ${{env.dotnet-version}}
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: ${{ current.dotnet-version }}     
+          dotnet-version: ${{env.dotnet-version}}    
       - name: Install dependencies
         run: dotnet restore
       - name: Build project

@@ -1,4 +1,4 @@
-name: TestPipeline
+name: MainPipeline
 
 on:  
   pull_request:
@@ -24,8 +24,6 @@ jobs:
         run: dotnet build --configuration Release --no-restore
       - name: Test
         run: dotnet test --no-restore --verbosity normal
-
-name: MainPipeline
 
 on:
   push:

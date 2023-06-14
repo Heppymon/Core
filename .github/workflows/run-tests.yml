@@ -5,19 +5,17 @@ on:
     branches: [ "main" ]
 
 env:
-  dotnet-version: [ "6.0.402" ]
+  dotnet-version: '6.0.402'
 
 jobs:
-  build:
-
+  RunTests:
     runs-on: ubuntu-latest
-       
     steps:
       - uses: actions/checkout@v3
-      - name: Setup .NET Core SDK $dotnet-version
+      - name: Setup .NET Core SDK ${{env.dotnet-version}}
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: $dotnet-version    
+          dotnet-version: ${{env.dotnet-version}}    
       - name: Install dependencies
         run: dotnet restore
       - name: Build project

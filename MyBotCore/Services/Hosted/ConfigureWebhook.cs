@@ -22,17 +22,9 @@ namespace MyBotCore.Services.Hosted
         {
             using var scope = _services.CreateScope();
             var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+            var webhookAddress = @$"{botSettings.HostAddress}/TgBot/HookPost";
 
-            // Configure custom endpoint per Telegram API recommendations:
-            // https://core.telegram.org/bots/api#setwebhook
-            // If you'd like to make sure that the Webhook request comes from Telegram, we recommend
-            // using a secret path in the URL, e.g. https://www.example.com/<token>.
-            // Since nobody else knows your bot's token, you can be pretty sure it's us.
-            // var webhookAddress = @$"{_botConfig.HostAddress}/bot/{_botConfig.BotToken}";
-
-            var webhookAddress = @$"{botSettings.HostAddress}/Tg/HookPost";
-
-            // Log.Information("Setting webhook: {WebhookAddress}", webhookAddress);
+            Log.Information("Setting webhook: {WebhookAddress}", webhookAddress);
             await botClient.SetWebhookAsync(
                 url: webhookAddress,
                 allowedUpdates: Array.Empty<UpdateType>(),

@@ -46,6 +46,11 @@ namespace MyBotCore.Services
             }
         }
 
+        public async Task<string> GetSomeString()
+        {
+            return "rdy";
+        }
+
         private async Task BotOnMessageReceived(Message message)
         {
             // logger.LogInformation("Receive message type: {MessageType}", message.Type);

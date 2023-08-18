@@ -19,11 +19,19 @@ namespace MyBotCore.Controllers
 
         [HttpPost("HookPost")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Post([FromBody] Update update)
+        public async Task<IActionResult> HookPost([FromBody] Update update)
         {
             //https://core.tlgr.org/bots/api#setwebhook
             await handleUpdateService.EchoAsync(update);
             return Ok();
+        }
+
+        [HttpGet("GetTest")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetTest()
+        {
+            var str = await handleUpdateService.GetSomeString();
+            return Ok(str);
         }
     }
 }

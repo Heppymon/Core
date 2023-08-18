@@ -1,36 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MyBotCore.Jobs;
 using MyBotCore.Services;
-using MyBotCore.Shared.Interfaces.Services;
+using MyBotCore.Services.Hosted;
 using MyBotCore.Shared.Settings;
 using MyBotDb;
 using Quartz;
 using System.Reflection;
+using Telegram.Bot;
 
 namespace MyBotCore
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         public void ConfigureServices(IServiceCollection services)
         {
-
             ConfigureSettings(services);
+            ConfigureHostedServices(services);
+
+            services.AddControllers();
+
             ConfigureSwagger(services);
             // ConfigureQuartz(services);
             ConfigureDatabase(services);
             ConfigureInternalServices(services);
-
-
-            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -41,12 +41,10 @@ namespace MyBotCore
             // Add exception middleware, 1st row!
             // app.UseMiddleware<ExceptionMiddleware>();
 
-
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "TGbotManager v1"));
             //app.UseHttpsRedirection();
             //app.UseHsts();
-
 
             app.UseMigration();
             app.UseCors("AllowAll");
@@ -75,7 +73,17 @@ namespace MyBotCore
 
         private void ConfigureInternalServices(IServiceCollection services)
         {
-            services.AddScoped<ITgBotService, TgBotService>();
+            // services.AddEndpointsApiExplorer();
+            services.AddScoped<TgBotService>();
+        }
+
+        private void ConfigureHostedServices(IServiceCollection services)
+        {
+            var botConfig = Configuration.GetSection("BotSettings").Get<BotSettings>();
+            services.AddHttpClient("tgwebhook")
+                .AddTypedClient<ITelegramBotClient>(httpClient => new TelegramBotClient(botConfig.BotToken, httpClient));
+
+            services.AddHostedService<ConfigureWebhook>();
         }
 
         private void ConfigureQuartz(IServiceCollection services)

@@ -53,7 +53,7 @@ services:
     ports:
       - mode: host
         protocol: tcp
-        published: 5432
+        published: 5544
         target: 5432
     networks:
       - tgbot

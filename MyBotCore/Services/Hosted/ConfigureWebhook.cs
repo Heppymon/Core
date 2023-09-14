@@ -8,19 +8,19 @@ namespace MyBotCore.Services.Hosted
 {
     public class ConfigureWebhook : IHostedService
     {
-        private readonly IServiceProvider _services;
+        private readonly IServiceProvider services;
         private readonly BotSettings botSettings;
 
         public ConfigureWebhook(IServiceProvider serviceProvider,
                                 IOptions<BotSettings> botSettings)
         {
-            _services = serviceProvider;
+            services = serviceProvider;
             this.botSettings = botSettings.Value;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            using var scope = _services.CreateScope();
+            using var scope = services.CreateScope();
             var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
             var webhookAddress = @$"{botSettings.HostAddress}/TgBot/HookPost";
 
@@ -33,7 +33,7 @@ namespace MyBotCore.Services.Hosted
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            using var scope = _services.CreateScope();
+            using var scope = services.CreateScope();
             var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
 
             // Remove webhook upon app shutdown

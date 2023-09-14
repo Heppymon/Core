@@ -13,24 +13,27 @@ namespace MyBotCore
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            WebHostEnvironment = environment;
         }
+
+        private IConfiguration Configuration { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // Step one - configure core settings of app
             ConfigureSettings(services);
-            ConfigureHostedServices(services);
 
-            services.AddControllers();
+            // Step two - configure hosted services
+            ConfigureAllServices(services);
 
+            // Step three - all others
             ConfigureSwagger(services);
             // ConfigureQuartz(services);
             ConfigureDatabase(services);
-            ConfigureInternalServices(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -71,19 +74,18 @@ namespace MyBotCore
             services.Configure<OpenAiSettings>(Configuration.GetSection("OpenAiSettings"));
         }
 
-        private void ConfigureInternalServices(IServiceCollection services)
+        private void ConfigureAllServices(IServiceCollection services)
         {
-            // services.AddEndpointsApiExplorer();
-            services.AddScoped<TgBotService>();
-        }
+            services.AddControllers();
 
-        private void ConfigureHostedServices(IServiceCollection services)
-        {
             var botConfig = Configuration.GetSection("BotSettings").Get<BotSettings>();
             services.AddHttpClient("tgwebhook")
                 .AddTypedClient<ITelegramBotClient>(httpClient => new TelegramBotClient(botConfig.BotToken, httpClient));
 
             services.AddHostedService<ConfigureWebhook>();
+
+
+            services.AddScoped<TgBotService>();
         }
 
         private void ConfigureQuartz(IServiceCollection services)

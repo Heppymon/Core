@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyBotCore.Jobs;
+using MyBotCore.Middleware;
 using MyBotCore.Services;
 using MyBotCore.Services.Hosted;
 using MyBotCore.Shared.Settings;
@@ -42,7 +43,7 @@ namespace MyBotCore
                 app.UseDeveloperExceptionPage();
 
             // Add exception middleware, 1st row!
-            // app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "TGbotManager v1"));

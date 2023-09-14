@@ -22,7 +22,7 @@ namespace MyBotCore.Services.Hosted
         {
             using var scope = services.CreateScope();
             var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
-            var webhookAddress = @$"{botSettings.HostAddress}/TgBot/HookPost";
+            var webhookAddress = @$"{botSettings.HostAddress}/api/Tg/Hook";
 
             Log.Information("Setting webhook: {WebhookAddress}", webhookAddress);
             await botClient.SetWebhookAsync(

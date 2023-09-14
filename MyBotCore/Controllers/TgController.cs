@@ -7,31 +7,23 @@ namespace MyBotCore.Controllers
 {
     //[ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
-    [Route("[controller]")]
-    public class TgBotController : ControllerBase
+    [Route("api/[controller]")]
+    public class TgController : ControllerBase
     {
         private readonly TgBotService handleUpdateService;
 
-        public TgBotController(TgBotService handleUpdateService)
+        public TgController(TgBotService handleUpdateService)
         {
             this.handleUpdateService = handleUpdateService;
         }
 
-        [HttpPost("HookPost")]
+        [HttpPost("Hook")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> HookPost([FromBody] Update update)
         {
             //https://core.tlgr.org/bots/api#setwebhook
             await handleUpdateService.EchoAsync(update);
             return Ok();
-        }
-
-        [HttpGet("GetTest")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetTest()
-        {
-            var str = await handleUpdateService.GetSomeString();
-            return Ok(str);
         }
     }
 }

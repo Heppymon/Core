@@ -1,6 +1,7 @@
 using MyBotCore.Shared.Settings;
 using Serilog;
-using Serilog.Configuration;
+using Serilog.Events;
+using Serilog.Exceptions;
 
 namespace MyBotCore
 {
@@ -19,7 +20,7 @@ namespace MyBotCore
                 .AddEnvironmentVariables()
                 .Build();
 
-            InitializeLogger(config);
+            InitializeLogger(config, environment);
             try
             {
                 Log.Information($"TgBot starting on {environment} environment.");
@@ -50,7 +51,7 @@ namespace MyBotCore
                 loggerSettings = builtConfig.GetSection(nameof(LoggerSettings)).Get<LoggerSettings>();
 
             })
-            // .UseSerilog() TODO: Add serilog into
+            .UseSerilog() // Uses Serilog instead of default .NET Logger
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder
@@ -60,10 +61,63 @@ namespace MyBotCore
             return host;
         }
 
-
-        private static void InitializeLogger(IConfigurationRoot config)
+        private static void InitializeLogger(IConfigurationRoot config, string environment)
         {
             var loggerSettings = config.GetSection(nameof(LoggerSettings)).Get<LoggerSettings>();
+            var loggerConfiguration = new LoggerConfiguration();
+            loggerConfiguration.WriteTo.Console();
+
+            if (loggerSettings != null && !string.IsNullOrEmpty(loggerSettings.SentryDSN))
+            {
+                loggerConfiguration.WriteTo.Sentry(o =>
+                {
+                    o.Debug = environment == Environments.Development;
+
+                    // Debug and higher are stored as breadcrumbs (default is Information)
+                    o.MinimumBreadcrumbLevel = o.Debug ? LogEventLevel.Debug : LogEventLevel.Information;
+                    // Warning and higher is sent as event (default is Error)
+                    o.MinimumEventLevel = (LogEventLevel)loggerSettings.LogEventLevel;
+
+                    // Set TracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+                    // We recommend adjusting this value in production.
+                    o.TracesSampleRate = 1.0;
+                    o.Dsn = loggerSettings.SentryDSN;
+                    o.AttachStacktrace = true;
+                    // send PII like the username of the user logged in to the device
+                    o.SendDefaultPii = true;
+                });
+            }
+
+            if (loggerSettings is null || string.IsNullOrEmpty(loggerSettings.FilePath))
+            {
+                // uncomment if file logging is required
+                Log.Logger = loggerConfiguration.CreateLogger();
+                Log.Information("LOG TO FILE DISABLED");
+                return;
+            }
+
+            if (loggerSettings.DisableEFInformationLogs)
+                loggerConfiguration.MinimumLevel.Override("Microsoft", (LogEventLevel)loggerSettings.LogEventLevel);
+
+            loggerConfiguration.Enrich.WithExceptionDetails();
+            loggerConfiguration.Enrich.WithEnvironmentName();
+            // loggerConfiguration.Enrich.WithMachineName();
+            if (!string.IsNullOrEmpty(loggerSettings.ApplicationName))
+                loggerConfiguration.Enrich.WithProperty("ApplicationName", loggerSettings.ApplicationName);
+
+            var logBasePath = Environment.GetEnvironmentVariable("APP_LOG_PATH");
+            if (string.IsNullOrEmpty(logBasePath))
+                logBasePath = loggerSettings.FilePath;
+            var logFilePath = Path.Combine(logBasePath, $"{loggerSettings.ApplicationName}-{environment}", ".log");
+            Log.Information("Log path: {LogPath}", logFilePath);
+
+            loggerConfiguration.WriteTo.File(logFilePath,
+                rollingInterval: Enum.Parse<RollingInterval>(loggerSettings.RollingInterval, true),
+                fileSizeLimitBytes: loggerSettings.FileSizeLimitBytes,
+                retainedFileCountLimit: loggerSettings.RetainedFileLimit,
+                outputTemplate: loggerSettings.Template);
+
+            Log.Logger = loggerConfiguration.CreateLogger();
         }
     }
 }

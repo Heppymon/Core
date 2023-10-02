@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using MyBotCore.Jobs;
 using MyBotCore.Middleware;
@@ -14,20 +15,17 @@ namespace MyBotCore
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
+        public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            WebHostEnvironment = environment;
         }
 
         private IConfiguration Configuration { get; }
-        private IWebHostEnvironment WebHostEnvironment { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             // Step one - configure core settings of app
             ConfigureSettings(services);
-
             // Step two - configure hosted services
             ConfigureAllServices(services);
 
@@ -44,21 +42,16 @@ namespace MyBotCore
 
             // Add exception middleware, 1st row!
             app.UseMiddleware<ExceptionMiddleware>();
-
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "TGbotManager v1"));
             //app.UseHttpsRedirection();
             //app.UseHsts();
-
             app.UseMigration();
-            app.UseCors("AllowAll");
-
-            app.UseAuthentication();
             app.UseRouting();
+            app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseStaticFiles();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -77,15 +70,17 @@ namespace MyBotCore
 
         private void ConfigureAllServices(IServiceCollection services)
         {
-            services.AddControllers();
+            // uncomment this for supress request model validation
+            // services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
 
+            services.AddControllers().AddNewtonsoftJson();
+
+            services.AddControllers();
             var botConfig = Configuration.GetSection("BotSettings").Get<BotSettings>();
             services.AddHttpClient("tgwebhook")
                 .AddTypedClient<ITelegramBotClient>(httpClient => new TelegramBotClient(botConfig.BotToken, httpClient));
 
             services.AddHostedService<ConfigureWebhook>();
-
-
             services.AddScoped<TgBotService>();
         }
 

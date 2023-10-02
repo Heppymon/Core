@@ -5,7 +5,7 @@ using Telegram.Bot.Types;
 
 namespace MyBotCore.Controllers
 {
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     [Route("api/[controller]")]
     public class TgController : ControllerBase
@@ -17,9 +17,12 @@ namespace MyBotCore.Controllers
             this.handleUpdateService = handleUpdateService;
         }
 
+        /// <summary>
+        /// Telegram webhook endpoint
+        /// </summary>
         [HttpPost("Hook")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> HookPost([FromBody] Update update)
+        public async Task<IActionResult> HookPost([FromBody]Update update)
         {
             //https://core.tlgr.org/bots/api#setwebhook
             await handleUpdateService.EchoAsync(update);

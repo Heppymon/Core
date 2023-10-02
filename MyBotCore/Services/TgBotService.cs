@@ -1,4 +1,6 @@
 ﻿using MyBotCore.Shared.Const;
+using MyBotCore.Shared.Enums;
+using MyBotCore.Shared.Exceptions;
 using MyBotCore.Shared.Interfaces.Services;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -18,6 +20,8 @@ namespace MyBotCore.Services
 
         public async Task EchoAsync(Update update)
         {
+            if (update is null)
+                throw new BusinessLogicException(ApiErrorCode.NullUpdateModel);
             var handler = update.Type switch
             {
                 // UpdateType.Unknown:
@@ -38,9 +42,7 @@ namespace MyBotCore.Services
             {
                 await handler;
             }
-#pragma warning disable CA1031
             catch (Exception exception)
-#pragma warning restore CA1031
             {
                 await HandleErrorAsync(exception);
             }
@@ -56,7 +58,13 @@ namespace MyBotCore.Services
             // logger.LogInformation("Receive message type: {MessageType}", message.Type);
             if (message.Type != MessageType.Text)
                 return;
+
             var command = message.Text!.ToLower().Split(' ')[0];
+
+            if (command == "/start")
+            {
+                // приветственное сообщение
+            }
             var action = command switch
             {
                 // "марафон" => StartMarathon(message),

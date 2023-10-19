@@ -12,16 +12,18 @@ namespace MyBotCore.Services
     public class TgBotService : ITgBotService
     {
         private ITelegramBotClient botClient;
-
-        public TgBotService(ITelegramBotClient botClient)
+        private readonly IScenario scenario;
+        public TgBotService(ITelegramBotClient botClient, IScenario scenario) // Сюда нужно положить сценарий, для действий бота
         {
             this.botClient = botClient;
+            this.scenario = scenario;
         }
 
         public async Task EchoAsync(Update update)
         {
             if (update is null)
                 throw new BusinessLogicException(ApiErrorCode.NullUpdateModel);
+
             var handler = update.Type switch
             {
                 // UpdateType.Unknown:
@@ -63,7 +65,10 @@ namespace MyBotCore.Services
 
             if (command == "/start")
             {
-                // приветственное сообщение
+                const string usage = "Используйте кнопки меню для работы с ботом, если их не видно, " +
+                    "нажмите на квадрат с точками в правом нижнем углу экрана :)";
+
+                //return await botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: usage /*replyMarkup: keyboardsService.MainMenu.ReplyKeyboard*/);
             }
             var action = command switch
             {
@@ -80,18 +85,7 @@ namespace MyBotCore.Services
 
         private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery)
         {
-            var commands = callbackQuery.Data!.Split(' ');
-            var action = commands[0] switch
-            {
-                // MarathonIdCommand => GetMarathon(callbackQuery, commands[1]),
-                _ => UsageHidden(callbackQuery)
-            };
-            try
-            {
-                Message sentMessage = await action;
-                // logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.MessageId);
-            }
-            catch (Exception ex) { /* logger.LogInformation(ex.Message); */}
+
         }
 
         private Task BotOnChosenInlineResultReceived(ChosenInlineResult chosenInlineResult)

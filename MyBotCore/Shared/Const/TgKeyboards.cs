@@ -23,5 +23,6 @@ namespace MyBotCore.Shared.Const
                 InputFieldPlaceholder = "Для работы с ботом используйте кнопки 👇"
             };
         }
+
     }
 }

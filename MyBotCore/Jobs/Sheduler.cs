@@ -16,6 +16,7 @@ namespace MyBotCore.Jobs
         {
             try
             {
+                Console.WriteLine(DateTime.Now.ToString());
                 // await RunSomething();
             }
             catch (Exception ex)

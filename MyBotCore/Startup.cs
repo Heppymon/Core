@@ -31,7 +31,7 @@ namespace MyBotCore
 
             // Step three - all others
             ConfigureSwagger(services);
-            // ConfigureQuartz(services);
+            ConfigureQuartz(services);
             ConfigureDatabase(services);
         }
 

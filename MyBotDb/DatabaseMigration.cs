@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 
 namespace MyBotDb
 {
@@ -8,11 +9,23 @@ namespace MyBotDb
     {
         public static IApplicationBuilder UseMigration(this IApplicationBuilder app)
         {
-            using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            var context = serviceScope.ServiceProvider.GetService<MyBotContext>();
-            context.Database.EnsureCreated();
-            if (context is not null)
-                context.Database.Migrate();
+            try
+            {
+                Log.Information("Executing Database.Migrate()...");
+
+                using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+                var ctx = serviceScope.ServiceProvider.GetService<MyBotContext>();
+                ctx?.Database.EnsureCreated();
+                ctx?.Database.Migrate();
+
+                // EnsureInitialResources().ConfigureAwait(false).GetAwaiter().GetResult();
+                Log.Information("Executing Database.Migrate() finished");
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Executing Database.Migrate() failed");
+                throw;
+            }
 
             return app;
         }

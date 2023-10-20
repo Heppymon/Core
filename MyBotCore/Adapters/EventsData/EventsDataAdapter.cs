@@ -17,20 +17,22 @@ namespace MyBotCore.Adapters.EventsData
 
         public async Task<List<EventDataModel>> GetEvents()
         {
-            var httpClient = new HttpClient();
-            var uri = new Uri(new Uri(adapterSettings.RootApiUrl), adapterSettings.GetEventsApi);
-
-            var response = await httpClient.GetAsync(uri);
-            if (response == null)
-                throw new Exception("Adapter returns null response");
-
+            // Temporal solution: Just for not overload a eventData web service
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";
-            var bodyResult = environment.Equals("Local") ? testString : await response.Content.ReadAsStringAsync();
+            string bodyResult;
 
-            var result = JsonConvert.DeserializeObject<EventsFullPageModel>(bodyResult);
-            if (result is null)
-                throw new Exception($"Get result of {adapterSettings.GetEventsApi}/{adapterSettings.GetEventsApi} was empty");
+            if (environment.Equals("Local"))
+                bodyResult = testString;
+            else
+            {
+                var httpClient = new HttpClient();
+                var uri = new Uri(new Uri(adapterSettings.RootApiUrl), adapterSettings.GetEventsApi);
+                var response = await httpClient.GetAsync(uri) ?? throw new Exception("Adapter returns null response");
+                bodyResult = await response.Content.ReadAsStringAsync();
+            }
 
+            var result = JsonConvert.DeserializeObject<EventsFullPageModel>(bodyResult)
+                ?? throw new Exception($"Get result of {adapterSettings.GetEventsApi}/{adapterSettings.GetEventsApi} was empty");
             return result?.data;
         }
     }

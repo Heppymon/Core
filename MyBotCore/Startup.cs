@@ -1,13 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using MyBotCore.Adapters.EventsData;
 using MyBotCore.Jobs;
+using MyBotCore.Middleware;
 using MyBotCore.Services;
+using MyBotCore.Services.Database;
+using MyBotCore.Services.Hosted;
+using MyBotCore.Shared.Interfaces.Adapters;
 using MyBotCore.Shared.Interfaces.Services;
 using MyBotCore.Shared.Settings;
 using MyBotDb;
 using Quartz;
 using System.Reflection;
+using Telegram.Bot;
 
 namespace MyBotCore
 {
@@ -18,19 +24,19 @@ namespace MyBotCore
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-
+            // Step one - configure core settings of app
             ConfigureSettings(services);
+            // Step two - configure hosted services
+            ConfigureAllServices(services);
+
+            // Step three - all others
             ConfigureSwagger(services);
-            // ConfigureQuartz(services);
+            ConfigureQuartz(services);
             ConfigureDatabase(services);
-            ConfigureInternalServices(services);
-
-
-            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -39,24 +45,17 @@ namespace MyBotCore
                 app.UseDeveloperExceptionPage();
 
             // Add exception middleware, 1st row!
-            // app.UseMiddleware<ExceptionMiddleware>();
-
-
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("./v1/swagger.json", "TGbotManager v1"));
             //app.UseHttpsRedirection();
             //app.UseHsts();
-
-
             app.UseMigration();
-            app.UseCors("AllowAll");
-
-            app.UseAuthentication();
             app.UseRouting();
+            app.UseCors("AllowAll");
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseStaticFiles();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -67,15 +66,31 @@ namespace MyBotCore
 
         private void ConfigureSettings(IServiceCollection services)
         {
-            services.Configure<BotSettings>(Configuration.GetSection("BotSettings"));
-            services.Configure<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
-            services.Configure<QuartzSettings>(Configuration.GetSection("QuartzSettings"));
-            services.Configure<OpenAiSettings>(Configuration.GetSection("OpenAiSettings"));
+            services.Configure<BotSettings>(Configuration.GetSection(nameof(BotSettings)));
+            services.Configure<ConnectionStrings>(Configuration.GetSection(nameof(ConnectionStrings)));
+            services.Configure<QuartzSettings>(Configuration.GetSection(nameof(QuartzSettings)));
+            services.Configure<OpenAiSettings>(Configuration.GetSection(nameof(OpenAiSettings)));
+            services.Configure<EDAdapterSettings>(Configuration.GetSection(nameof(EDAdapterSettings)));
         }
 
-        private void ConfigureInternalServices(IServiceCollection services)
+        private void ConfigureAllServices(IServiceCollection services)
         {
+            // DEBUG ONLY: uncomment this for supress request model validation
+            // services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+            services.AddControllers().AddNewtonsoftJson();
+
+            services.AddControllers();
+            var botConfig = Configuration.GetSection("BotSettings").Get<BotSettings>();
+            services.AddHttpClient("tgwebhook")
+                .AddTypedClient<ITelegramBotClient>(httpClient => new TelegramBotClient(botConfig.BotToken, httpClient));
+
+            services.AddHostedService<ConfigureWebhook>();
+
             services.AddScoped<ITgBotService, TgBotService>();
+            services.AddScoped<IEventsDataAdapter, EventsDataAdapter>();
+            services.AddScoped<IRepo, RepoService>();
+            services.AddScoped<IEventDataService, EventDataService>();
         }
 
         private void ConfigureQuartz(IServiceCollection services)
@@ -126,7 +141,7 @@ namespace MyBotCore
             if (string.IsNullOrWhiteSpace(cs))
                 cs = Configuration.GetSection("ConnectionStrings").Get<ConnectionStrings>().PostgresDb;
 
-            services.AddDbContext<MyBotContext>(options => options.UseNpgsql(cs));
+            services.AddDbContext<MainBotContext>(options => options.UseNpgsql(cs));
         }
     }
 }

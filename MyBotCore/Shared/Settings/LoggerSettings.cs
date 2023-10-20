@@ -9,5 +9,7 @@
         public string RollingInterval { get; set; }
         public string Template { get; set; }
         public bool DisableEFInformationLogs { get; set; }
+        public string SentryDSN { get; set; } = string.Empty!;
+        public int LogEventLevel { get; set; } = 4; // Default logLevel is Warning (4)
     }
 }

@@ -1,4 +1,7 @@
 ﻿using MyBotCore.Shared.Const;
+using MyBotCore.Shared.Enums;
+using MyBotCore.Shared.Exceptions;
+using MyBotCore.Shared.Interfaces;
 using MyBotCore.Shared.Interfaces.Services;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
@@ -10,14 +13,18 @@ namespace MyBotCore.Services
     public class TgBotService : ITgBotService
     {
         private ITelegramBotClient botClient;
-
-        public TgBotService(ITelegramBotClient botClient)
+        private readonly IScenario scenario;
+        public TgBotService(ITelegramBotClient botClient, IScenario scenario) // Сюда нужно положить сценарий, для действий бота
         {
             this.botClient = botClient;
+            this.scenario = scenario;
         }
 
         public async Task EchoAsync(Update update)
         {
+            if (update is null)
+                throw new BusinessLogicException(ApiErrorCode.NullUpdateModel);
+
             var handler = update.Type switch
             {
                 // UpdateType.Unknown:
@@ -38,12 +45,15 @@ namespace MyBotCore.Services
             {
                 await handler;
             }
-#pragma warning disable CA1031
             catch (Exception exception)
-#pragma warning restore CA1031
             {
                 await HandleErrorAsync(exception);
             }
+        }
+
+        public async Task<string> GetSomeString()
+        {
+            return "rdy";
         }
 
         private async Task BotOnMessageReceived(Message message)
@@ -51,7 +61,16 @@ namespace MyBotCore.Services
             // logger.LogInformation("Receive message type: {MessageType}", message.Type);
             if (message.Type != MessageType.Text)
                 return;
+
             var command = message.Text!.ToLower().Split(' ')[0];
+
+            if (command == "/start")
+            {
+                const string usage = "Используйте кнопки меню для работы с ботом, если их не видно, " +
+                    "нажмите на квадрат с точками в правом нижнем углу экрана :)";
+
+                //return await botClient.SendTextMessageAsync(chatId: message.Chat.Id, text: usage /*replyMarkup: keyboardsService.MainMenu.ReplyKeyboard*/);
+            }
             var action = command switch
             {
                 // "марафон" => StartMarathon(message),
@@ -67,18 +86,7 @@ namespace MyBotCore.Services
 
         private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery)
         {
-            var commands = callbackQuery.Data!.Split(' ');
-            var action = commands[0] switch
-            {
-                // MarathonIdCommand => GetMarathon(callbackQuery, commands[1]),
-                _ => UsageHidden(callbackQuery)
-            };
-            try
-            {
-                Message sentMessage = await action;
-                // logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.MessageId);
-            }
-            catch (Exception ex) { /* logger.LogInformation(ex.Message); */}
+
         }
 
         private Task BotOnChosenInlineResultReceived(ChosenInlineResult chosenInlineResult)

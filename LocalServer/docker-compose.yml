@@ -1,7 +1,7 @@
 version: "3.7"
 
 services:
-  proxy:
+  tgbotnginx:
     container_name: tgbotnginx
     image: nginx:latest
     volumes:
@@ -20,13 +20,15 @@ services:
       - tgbot
     restart: always
 
-  api:
+  tgbotapi:
     container_name: tgbotapi
     build:
       context: ../.
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Local
+      - ConnectionStrings:PostgresDb=User ID=$POSTGRES_LOGIN;
+          Password=$POSTGRES_PASSWORD;Host=tgbotdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_DBNAME;Pooling=true
       - ASPNETCORE_URLS=http://+:8443
     ports:
       - mode: host
@@ -36,16 +38,16 @@ services:
     networks:
       - tgbot
     depends_on:
-      - db
+      - tgbotdb
     restart: always
 
-  db:
+  tgbotdb:
     container_name: tgbotdb
     image: postgres:latest
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=TgBot
+      - POSTGRES_PASSWORD=$POSTGRES_LOGIN
+      - POSTGRES_USER=$POSTGRES_PASSWORD
+      - POSTGRES_DB=$POSTGRES_DBNAME
     volumes:
       - pgdata:/var/lib/postgresql/data
       - pgconf:/etc/postgresql
@@ -53,8 +55,8 @@ services:
     ports:
       - mode: host
         protocol: tcp
-        published: 5432
-        target: 5432
+        published: $POSTGRES_DEFAULTPORT
+        target: $POSTGRES_DEFAULTPORT
     networks:
       - tgbot
     restart: always

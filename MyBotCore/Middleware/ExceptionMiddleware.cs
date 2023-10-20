@@ -1,6 +1,7 @@
 ﻿using MyBotCore.Shared.Enums;
 using MyBotCore.Shared.Exceptions;
 using MyBotCore.Shared.Responses;
+using Serilog;
 using System.Globalization;
 using System.Net;
 using System.Text.Json;
@@ -10,11 +11,9 @@ namespace MyBotCore.Middleware
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate next;
-        private readonly ILogger<ExceptionMiddleware> logger;
-        public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+        public ExceptionMiddleware(RequestDelegate next)
         {
             this.next = next;
-            this.logger = logger;
         }
         public async Task Invoke(HttpContext context)
         {
@@ -28,12 +27,10 @@ namespace MyBotCore.Middleware
             }
             catch (Exception e)
             {
-                ExceptionLog(e);
-
-                await UnknownErrorResponseWriteAsync(HttpStatusCode.InternalServerError);
+                await UnknownErrorResponseWriteAsync(HttpStatusCode.InternalServerError, e);
             }
 
-            async Task UnknownErrorResponseWriteAsync(HttpStatusCode httpStatusCode)
+            async Task UnknownErrorResponseWriteAsync(HttpStatusCode httpStatusCode, Exception exception)
             {
                 context.Response.ContentType = "application/json";
                 context.Response.StatusCode = (int)httpStatusCode;
@@ -41,6 +38,12 @@ namespace MyBotCore.Middleware
                 var json = JsonSerializer.Serialize(new ApiResponseModel(errorCodeEnum: ApiErrorCode.UnKnownError));
 
                 await context.Response.WriteAsync(json);
+                Log.Error(JsonSerializer.Serialize(new
+                {
+                    exception.Message,
+                    exception.StackTrace,
+                    CreateDate = DateTime.UtcNow.ToString("G", CultureInfo.CreateSpecificCulture("en-US"))
+                }));
             }
 
             async Task ErrorResponseWriteAsync(HttpStatusCode httpStatusCode, BusinessLogicException exception)
@@ -53,14 +56,11 @@ namespace MyBotCore.Middleware
                     {
                         Data = exception.Data
                     }));
-            }
 
-            void ExceptionLog<TException>(TException ex) where TException : Exception
-            {
-                logger.LogCritical(JsonSerializer.Serialize(new
+                Log.Warning(JsonSerializer.Serialize(new
                 {
-                    ex.Message,
-                    ex.StackTrace,
+                    exception.Message,
+                    exception.StackTrace,
                     CreateDate = DateTime.UtcNow.ToString("G", CultureInfo.CreateSpecificCulture("en-US"))
                 }));
             }

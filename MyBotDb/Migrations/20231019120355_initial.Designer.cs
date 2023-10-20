@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace MyBotDb.Migrations
 {
-    [DbContext(typeof(MyBotContext))]
+    [DbContext(typeof(MainBotContext))]
     [Migration("20231019120355_initial")]
     partial class initial
     {

@@ -1,6 +1,7 @@
 ﻿using MyBotCore.Shared.Const;
 using MyBotCore.Shared.Enums;
 using MyBotCore.Shared.Exceptions;
+using MyBotCore.Shared.Interfaces;
 using MyBotCore.Shared.Interfaces.Services;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;

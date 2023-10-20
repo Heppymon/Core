@@ -36,8 +36,7 @@ namespace MyBotCore.Services.Hosted
             using var scope = services.CreateScope();
             var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
 
-            // Remove webhook upon app shutdown
-            // Log.Information("Removing webhook");
+            Log.Information("Removing webhook");
             await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
         }
     }

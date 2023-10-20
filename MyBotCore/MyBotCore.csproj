@@ -45,4 +45,8 @@
     <ProjectReference Include="..\MyBotDb\MyBotDb.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Shared\Requests\" />
+  </ItemGroup>
+
 </Project>

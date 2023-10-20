@@ -14,7 +14,7 @@ namespace MyBotDb
                 Log.Information("Executing Database.Migrate()...");
 
                 using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-                var ctx = serviceScope.ServiceProvider.GetService<MyBotContext>();
+                var ctx = serviceScope.ServiceProvider.GetService<MainBotContext>();
                 ctx?.Database.EnsureCreated();
                 ctx?.Database.Migrate();
 

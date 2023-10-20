@@ -3,10 +3,10 @@ using MyBotDb.Models;
 
 namespace MyBotDb
 {
-    public class MyBotContext : DbContext
+    public class MainBotContext : DbContext
     {
-        public MyBotContext() : base() { }
-        public MyBotContext(DbContextOptions options) : base(options) { }
+        public MainBotContext() : base() { }
+        public MainBotContext(DbContextOptions options) : base(options) { }
         public DbSet<DbUser> Users { get; set; }
         public DbSet<DbEventData> EventsData { get; set; }
 

@@ -1,27 +1,32 @@
-﻿using Quartz;
+﻿using MyBotCore.Shared.Interfaces.Adapters;
+using MyBotCore.Shared.Interfaces.Services;
+using Quartz;
+using Serilog;
 
 namespace MyBotCore.Jobs
 {
     [DisallowConcurrentExecution]
     public class Sheduler : IJob
     {
-        private readonly ILogger<Sheduler> logger;
+        private readonly IEventsDataAdapter dataAdapter;
+        private readonly IEventDataService eventDataService;
 
-        public Sheduler(ILogger<Sheduler> logger)
+        public Sheduler(IEventsDataAdapter eventDataAdapter, IEventDataService eventDataService)
         {
-            this.logger = logger;
+            this.dataAdapter = eventDataAdapter;
+            this.eventDataService = eventDataService;
         }
 
         public async Task Execute(IJobExecutionContext context)
         {
             try
             {
-                Console.WriteLine(DateTime.Now.ToString());
-                // await RunSomething();
+                var actualizeResult = await eventDataService.ActualizeEventsData(await dataAdapter.GetEvents());
+                Log.Information(actualizeResult ? "Events data has been updated successfully" : "Events data update failed");
             }
             catch (Exception ex)
             {
-                logger.LogError(ex.ToString());
+                Log.Error(ex.ToString());
             }
         }
     }

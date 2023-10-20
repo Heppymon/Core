@@ -58,7 +58,7 @@ services:
     restart: always
 
   dozzle:
-    container_name: go-mux-dozzle
+    container_name: dozzle
     image: amir20/dozzle:v4.6.3
     environment:
       - DOZZLE_USERNAME=dozzle

@@ -78,6 +78,7 @@ services:
 networks:
   tgbot:
     name: tgbot
+    driver: bridge
 
 volumes:
   pgdata:

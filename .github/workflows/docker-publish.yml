@@ -72,4 +72,4 @@ jobs:
             cd tgbot/Server
             docker compose down
             docker compose pull
-            docker compose up --build --force-recreate -d
+            docker compose --env-file botCore.env up --build --force-recreate -d

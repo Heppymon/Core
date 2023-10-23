@@ -70,6 +70,6 @@ jobs:
           port: "22" # ${{ secrets.PORT }}
           script: |
             cd tgbot/Server
-            docker compose down
-            docker compose pull
+            docker compose --env-file botCore.env down
+            docker compose --env-file botCore.env pull
             docker compose --env-file botCore.env up --build --force-recreate -d

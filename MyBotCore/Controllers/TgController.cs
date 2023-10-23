@@ -1,28 +1,28 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MyBotCore.Services;
+using MyBotCore.Shared.Interfaces.Services;
 using System.Net;
 using Telegram.Bot.Types;
 
 namespace MyBotCore.Controllers
 {
-    [ApiExplorerSettings(IgnoreApi = true)]
+    /// <summary>
+    /// This controller exists only for the telegram webhook
+    /// </summary>
+    [ApiExplorerSettings(IgnoreApi = true)] // Attention: It`s hidden from Swagger by this row
     [ApiController]
     [Route("api/[controller]")]
     public class TgController : ControllerBase
     {
-        private readonly TgBotService handleUpdateService;
+        private readonly ITgBotService handleUpdateService;
 
-        public TgController(TgBotService handleUpdateService)
+        public TgController(ITgBotService handleUpdateService)
         {
             this.handleUpdateService = handleUpdateService;
         }
 
-        /// <summary>
-        /// Telegram webhook endpoint
-        /// </summary>
         [HttpPost("Hook")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        public async Task<IActionResult> HookPost([FromBody]Update update)
+        public async Task<IActionResult> HookPost([FromBody] Update update)
         {
             //https://core.tlgr.org/bots/api#setwebhook
             await handleUpdateService.EchoAsync(update);

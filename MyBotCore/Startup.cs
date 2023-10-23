@@ -7,6 +7,8 @@ using MyBotCore.Middleware;
 using MyBotCore.Services;
 using MyBotCore.Services.Database;
 using MyBotCore.Services.Hosted;
+using MyBotCore.Services.Keyboard;
+using MyBotCore.Shared.Interfaces;
 using MyBotCore.Shared.Interfaces.Adapters;
 using MyBotCore.Shared.Interfaces.Services;
 using MyBotCore.Shared.Settings;
@@ -89,7 +91,9 @@ namespace MyBotCore
 
             services.AddScoped<ITgBotService, TgBotService>();
             services.AddScoped<IEventsDataAdapter, EventsDataAdapter>();
+            services.AddScoped<IScenario, MainScenario>();
             services.AddScoped<IRepo, RepoService>();
+            services.AddScoped<IKeyboardService, KeyboardService>();
             services.AddScoped<IEventDataService, EventDataService>();
         }
 

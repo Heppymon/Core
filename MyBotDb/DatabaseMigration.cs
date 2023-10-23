@@ -15,7 +15,7 @@ namespace MyBotDb
 
                 using var serviceScope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
                 var ctx = serviceScope.ServiceProvider.GetService<MainBotContext>();
-                ctx?.Database.EnsureCreated();
+                // ctx?.Database.EnsureCreated();
                 ctx?.Database.Migrate();
 
                 // EnsureInitialResources().ConfigureAwait(false).GetAwaiter().GetResult();

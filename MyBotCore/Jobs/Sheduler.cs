@@ -2,6 +2,8 @@
 using MyBotCore.Shared.Interfaces.Services;
 using Quartz;
 using Serilog;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Diagnostics;
 
 namespace MyBotCore.Jobs
 {

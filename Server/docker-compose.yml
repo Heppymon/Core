@@ -5,17 +5,17 @@ services:
     container_name: tgbotnginx
     image: nginx:latest
     volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt:/etc/letsencrypt
+      - $NGINX_CONF_PATH
+      - $NGINX_CERT_PATH
     ports:
       - mode: host
         protocol: tcp
-        published: 80
-        target: 80
+        published: $NGINX_HTTP
+        target: $NGINX_HTTP
       - mode: host
         protocol: tcp
-        published: 443
-        target: 443
+        published: $NGINX_HTTPS
+        target: $NGINX_HTTPS
     networks:
       - tgbot
     restart: always
@@ -24,22 +24,22 @@ services:
     container_name: tgbotapi
     image: heppymon/mytgbot:latest
     environment:
-      - ASPNETCORE_ENVIRONMENT=Prod
+      - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
       - ConnectionStrings:PostgresDb=User ID=$POSTGRES_LOGIN;
           Password=$POSTGRES_PASSWORD;Host=tgbotdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_DBNAME;Pooling=true
-      - ASPNETCORE_URLS=http://+:8443
+      - ASPNETCORE_URLS=http://+:$MAIN_PORT
     ports:
       - mode: host
         protocol: tcp
-        published: 8443
-        target: 8443
+        published: $MAIN_PORT
+        target: $MAIN_PORT
     networks:
       - tgbot
     depends_on:
-      - db
+      - tgbotdb
     restart: always
 
-  tgbotdb:
+  db:
     container_name: tgbotdb
     image: postgres:latest
     environment:
@@ -60,15 +60,20 @@ services:
     restart: always
 
   dozzle:
-    container_name: dozzle
+    container_name: tgbotLogs
     image: amir20/dozzle:v4.6.3
     environment:
-      - DOZZLE_USERNAME=dozzle
-      - DOZZLE_PASSWORD=DOZZLEPASSWORDFORMYTGBOT911
+      - DOZZLE_USERNAME=$DOZZLE_USERNAME
+      - DOZZLE_PASSWORD=$DOZZLE_PASSWORD
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - tgbot
     ports:
-      - 8888:8080
+      - mode: host
+        protocol: tcp
+        published: $DOZZLE_PUBLISHED_PORT
+        target: $DOZZLE_TARGET_PORT
 
 networks:
   tgbot:

@@ -59,8 +59,8 @@ services:
       - tgbot
     restart: always
 
-  dozzle:
-    container_name: tgbotLogs
+  logs:
+    container_name: tgbotlogs
     image: amir20/dozzle:v4.6.3
     environment:
       - DOZZLE_USERNAME=$DOZZLE_USERNAME

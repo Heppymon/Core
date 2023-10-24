@@ -8,7 +8,10 @@ Here will be a description of root services, adapters and controllers
 
 ### Docker
 
-Description of the Dokerfiles and the launch of the project
+### Stand container logs
+
+Available via http://heppymonbot.ru:8888/
+TODO: Fix nginx routing for https://heppymonbot.ru/logs instead of simple http with 8888 container direct port.
 
 # Architecture
 

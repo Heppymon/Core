@@ -17,9 +17,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker image
         run: |
-          docker build . --tag ghcr.io/Heppymon/MyBot:latest
-          docker run ghcr.io/Heppymon/MyBot:latest
-          docker push ghcr.io/Heppymon/MyBot:latest
+          docker build . --tag ghcr.io/heppymon/mybot:latest
+          docker run ghcr.io/heppymon/mybot:latest
+          docker push ghcr.io/heppymon/mybot:latest
 
   deploy:
     needs: build

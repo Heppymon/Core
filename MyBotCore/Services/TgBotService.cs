@@ -33,7 +33,7 @@ namespace MyBotCore.Services
                 // UpdateType.ShippingQuery:
                 // UpdateType.PreCheckoutQuery:
                 // UpdateType.Poll:
-                UpdateType.Message => BotOnMessageReceived(update.Message!),
+                UpdateType.Message => scenario.OnMessageReceived(update.Message!),
                 UpdateType.EditedMessage => BotOnMessageReceived(update.EditedMessage!),
                 UpdateType.CallbackQuery => BotOnCallbackQueryReceived(update.CallbackQuery!),
                 // UpdateType.InlineQuery => BotOnInlineQueryReceived(update.InlineQuery!),

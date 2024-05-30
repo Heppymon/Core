@@ -93,7 +93,6 @@ namespace MyBotCore
             services.AddScoped<IEventsDataAdapter, EventsDataAdapter>();
             services.AddScoped<IScenario, MainScenario>();
             services.AddScoped<IRepo, RepoService>();
-            services.AddScoped<IKeyboardService, KeyboardService>();
             services.AddScoped<IEventDataService, EventDataService>();
         }
 

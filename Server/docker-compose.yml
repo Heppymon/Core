@@ -21,7 +21,6 @@ services:
     restart: always
 
   api:
-    container_name: tgbotapi
     image: heppymon/mytgbot:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
@@ -36,11 +35,10 @@ services:
     networks:
       - tgbot
     depends_on:
-      - tgbotdb
+      - db
     restart: always
 
   db:
-    container_name: tgbotdb
     image: postgres:latest
     environment:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
@@ -60,7 +58,6 @@ services:
     restart: always
 
   logs:
-    container_name: tgbotlogs
     image: amir20/dozzle:v4.6.3
     environment:
       - DOZZLE_USERNAME=$DOZZLE_USERNAME

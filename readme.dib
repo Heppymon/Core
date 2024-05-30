@@ -4,12 +4,50 @@
 
 #!csharp
 
-using System.IO;
+using System.Numerics;
 
-var dirs = Directory.GetDirectories("C:");
-foreach(var dir in dirs)
-Console.WriteLine(dir);
+
+public static class ConwayLifeDebug
+{
+    public static void mian()
+    {
+        var gg = GetListFromFlag<ApiEventType>(7);
+        foreach(var item in gg){
+            Console.WriteLine(item.ToString());
+        }
+    }
+}
+
+    public static List<TEnum> GetListFromFlag<TEnum>(int value) where TEnum : struct, Enum
+    {
+        List<TEnum> result = new();
+        BitArray b = new(new int[] { value });
+        for (int i = 0; i < BiggerBitPosition((uint)value); i++)
+        {
+            if (b[i])
+            {
+                result.Add((TEnum)(object)(int)(Math.Pow(2,i)));
+            }
+        }
+        return result;
+    }
+
+public enum ApiEventType
+{
+    Unknown = 1,
+
+    Get = 2,
+
+    Update = 4
+}
+
+private static int BiggerBitPosition(uint bits)
+    => 32 - System.Numerics.BitOperations.LeadingZeroCount(bits);
+
+#!csharp
+
+ConwayLifeDebug.mian()
 
 #!markdown
 
-Надо как то обыграть этот файл, очень интересный, можно в нем написать докуху по модулять инетрактивную, кайф
+Надо как то обыграть этот файл, очень интересный, можно в нем написать докуху по модулям инетрактивную, кайф

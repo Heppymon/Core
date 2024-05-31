@@ -21,7 +21,7 @@ services:
     restart: always
 
   api:
-    image: heppymon/mytgbot:latest
+    image: cr.myzdrikov.ru/mybot:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
       - ConnectionStrings:PostgresDb=User ID=$POSTGRES_LOGIN;
@@ -57,20 +57,20 @@ services:
       - tgbot
     restart: always
 
-  logs:
-    image: amir20/dozzle:v4.6.3
-    environment:
-      - DOZZLE_USERNAME=$DOZZLE_USERNAME
-      - DOZZLE_PASSWORD=$DOZZLE_PASSWORD
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - tgbot
-    ports:
-      - mode: host
-        protocol: tcp
-        published: $DOZZLE_PUBLISHED_PORT
-        target: $DOZZLE_TARGET_PORT
+  #logs:
+  #  image: amir20/dozzle:v4.6.3
+  #  environment:
+  #    - DOZZLE_USERNAME=$DOZZLE_USERNAME
+  #    - DOZZLE_PASSWORD=$DOZZLE_PASSWORD
+  #  volumes:
+  #    - /var/run/docker.sock:/var/run/docker.sock
+  #  networks:
+  #    - tgbot
+  #  ports:
+  #   - mode: host
+  #      protocol: tcp
+  #      published: $DOZZLE_PUBLISHED_PORT
+  #      target: $DOZZLE_TARGET_PORT
 
 networks:
   tgbot:

@@ -54,6 +54,8 @@ jobs:
         # Hack to prevent "Host key verification failed". Should be replaced with a ssh-keyscan based solution
         run: echo "StrictHostKeyChecking no" >> ~/.ssh/config
 
+# need add
+# docker login cr.myzdrikov.ru -u ${{ secrets.DOCKER_HUB_LOGIN }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: multiple command
         uses: appleboy/ssh-action@v0.1.10
         with:

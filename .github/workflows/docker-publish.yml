@@ -12,14 +12,13 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: cr.myzdrikov.ru
+          username: ${{ secrets.DOCKER_HUB_LOGIN }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: Build Docker image
         run: |
-          docker build . --tag ghcr.io/heppymon/mybot:latest
-          docker run ghcr.io/heppymon/mybot:latest
-          docker push ghcr.io/heppymon/mybot:latest
+          docker build . --tag cr.myzdrikov.ru/mybot:latest
+          docker push cr.myzdrikov.ru/mybot:latest
 
   deploy:
     needs: build

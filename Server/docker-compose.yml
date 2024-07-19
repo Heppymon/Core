@@ -1,25 +1,24 @@
 version: "3.7"
 
 services:
-  proxy:
-    container_name: tgbotnginx
-    image: nginx:latest
-    volumes:
-      - $NGINX_CONF_PATH
-      - $NGINX_CERT_PATH
-    ports:
-      - mode: host
-        protocol: tcp
-        published: $NGINX_HTTP
-        target: $NGINX_HTTP
+#  proxy:
+#    container_name: tgbotnginx
+#    image: nginx:latest
+#    volumes:
+#      - $NGINX_CONF_PATH
+#      - $NGINX_CERT_PATH
+#    ports:
+#      - mode: host
+#        protocol: tcp
+#        published: $NGINX_HTTP
+#        target: $NGINX_HTTP
 #      - mode: host
 #        protocol: tcp
 #        published: $NGINX_HTTPS
 #        target: $NGINX_HTTPS
-    networks:
-      - tgbot
-    restart: always
-
+#    networks:
+#      - tgbot
+#    restart: always
   api:
     image: cr.myzdrikov.ru/mybot:latest
     environment:

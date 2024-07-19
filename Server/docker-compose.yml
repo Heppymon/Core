@@ -78,9 +78,9 @@ services:
       - tgbot
     ports:
      - mode: host
-        protocol: tcp
-        published: $DOZZLE_PUBLISHED_PORT
-        target: $DOZZLE_TARGET_PORT
+       protocol: tcp
+       published: $DOZZLE_PUBLISHED_PORT
+       target: $DOZZLE_TARGET_PORT
 
 networks:
   tgbot:

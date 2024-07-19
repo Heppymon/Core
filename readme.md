@@ -10,8 +10,15 @@ Here will be a description of root services, adapters and controllers
 
 ### Stand container logs
 
-Available via http://heppymonbot.ru:8888/
-TODO: Fix nginx routing for https://heppymonbot.ru/logs instead of simple http with 8888 container direct port.
+~~Available via http://heppymonbot.ru:8888/~~
+
+~~TODO: Fix nginx routing for https://heppymonbot.ru/logs instead of simple http with 8888 container direct port.~~
+
+Stand info:
+
+new ip - 80.87.104.208 (my own VDS on netangels created by user: u108763)
+
+new domain - https://myzdrikov.ru/
 
 # Architecture
 

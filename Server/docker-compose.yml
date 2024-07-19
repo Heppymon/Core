@@ -52,6 +52,7 @@ services:
     restart: always
     
   db:
+    container_name: tgbotdb
     image: postgres:latest
     environment:
       - POSTGRES_PASSWORD=$POSTGRES_PASSWORD

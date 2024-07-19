@@ -8,10 +8,10 @@ services:
       - $NGINX_CONF_PATH
       - $NGINX_CERT_PATH
     ports:
-      - mode: host
-        protocol: tcp
-        published: $NGINX_HTTP
-        target: $NGINX_HTTP
+#      - mode: host
+#        protocol: tcp
+#        published: $NGINX_HTTP
+#        target: $NGINX_HTTP
       - mode: host
         protocol: tcp
         published: $NGINX_HTTPS
@@ -21,7 +21,7 @@ services:
     restart: always
 
   api:
-    container_name: tgbotbe
+    container_name: tgbotback
     image: cr.myzdrikov.ru/mybot:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
@@ -38,9 +38,9 @@ services:
     depends_on:
       - db
     restart: always
-    
+
   front:
-    container_name: front
+    container_name: tgbotfront
     image: cr.myzdrikov.ru/mypage:latest
     ports:
       - mode: host
@@ -71,6 +71,7 @@ services:
     restart: always
 
   logs:
+    container_name: tgbotlogs
     image: amir20/dozzle:v4.6.3
     environment:
       - DOZZLE_USERNAME=$DOZZLE_USERNAME

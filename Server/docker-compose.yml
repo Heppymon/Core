@@ -1,25 +1,27 @@
 version: "3.7"
 
 services:
-#  proxy:
-#    container_name: tgbotnginx
-#    image: nginx:latest
-#    volumes:
-#      - $NGINX_CONF_PATH
-#      - $NGINX_CERT_PATH
-#    ports:
-#      - mode: host
-#        protocol: tcp
-#        published: $NGINX_HTTP
-#        target: $NGINX_HTTP
-#      - mode: host
-#        protocol: tcp
-#        published: $NGINX_HTTPS
-#        target: $NGINX_HTTPS
-#    networks:
-#      - tgbot
-#    restart: always
+  proxy:
+    container_name: tgbotnginx
+    image: nginx:latest
+    volumes:
+      - $NGINX_CONF_PATH
+      - $NGINX_CERT_PATH
+    ports:
+      - mode: host
+        protocol: tcp
+        published: $NGINX_HTTP
+        target: $NGINX_HTTP
+      - mode: host
+        protocol: tcp
+        published: $NGINX_HTTPS
+        target: $NGINX_HTTPS
+    networks:
+      - tgbot
+    restart: always
+
   api:
+    container_name: tgbotbe
     image: cr.myzdrikov.ru/mybot:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
@@ -38,12 +40,13 @@ services:
     restart: always
     
   front:
+    container_name: front
     image: cr.myzdrikov.ru/mypage:latest
     ports:
       - mode: host
         protocol: tcp
-        published: $FRONT_OUTSIDE_DEFAULTPORT
-        target: $FRONT_INSIDE_DEFAULTPORT
+        published: $FRONT_DEFAULTPORT
+        target: $FRONT_DEFAULTPORT
     networks:
       - tgbot
     restart: always

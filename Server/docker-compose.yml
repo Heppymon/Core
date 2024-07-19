@@ -12,10 +12,10 @@ services:
         protocol: tcp
         published: $NGINX_HTTP
         target: $NGINX_HTTP
-      - mode: host
-        protocol: tcp
-        published: $NGINX_HTTPS
-        target: $NGINX_HTTPS
+#      - mode: host
+#        protocol: tcp
+#        published: $NGINX_HTTPS
+#        target: $NGINX_HTTPS
     networks:
       - tgbot
     restart: always

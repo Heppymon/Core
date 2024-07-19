@@ -36,7 +36,17 @@ services:
     depends_on:
       - db
     restart: always
-
+    
+  front:
+    image: cr.myzdrikov.ru/mypage:latest
+    ports:
+      - mode: host
+        protocol: tcp
+        published: $FRONT_OUTSIDE_DEFAULTPORT
+        target: $FRONT_INSIDE_DEFAULTPORT
+    networks:
+      - tgbot
+    restart: always
   db:
     image: postgres:latest
     environment:

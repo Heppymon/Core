@@ -50,6 +50,23 @@ services:
     networks:
       - tgbot
     restart: always
+
+  snt:
+    container_name: tgbotfront
+    image: cr.myzdrikov.ru/mysnt:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
+      - ConnectionStrings:PostgresDb=User ID=$POSTGRES_LOGIN;
+          Password=$POSTGRES_PASSWORD;Host=sntdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_DBNAME;Pooling=true
+      - ASPNETCORE_URLS=http://+:$SNT_DEFAULTPORT
+    ports:
+      - mode: host
+        protocol: tcp
+        published: $SNT_DEFAULTPORT
+        target: $SNT_DEFAULTPORT
+    networks:
+      - tgbot
+    restart: always
     
   db:
     container_name: tgbotdb

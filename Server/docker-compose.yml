@@ -25,7 +25,7 @@ services:
     image: cr.myzdrikov.ru/mybot:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
-      - ConnectionStrings:PostgresDb=User ID=$POSTGRES_LOGIN;
+      - ConnectionStrings:Postgres=User ID=$POSTGRES_LOGIN;
           Password=$POSTGRES_PASSWORD;Host=tgbotdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_DBNAME;Pooling=true
       - ASPNETCORE_URLS=http://+:$MAIN_PORT
     ports:
@@ -55,7 +55,7 @@ services:
     container_name: tgbotsnt
     image: cr.myzdrikov.ru/mysnt:latest
     environment:
-      - ASPNETCORE_ENVIRONMENT=$DOTNETCORE_ENVIRONMENT
+      - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
       - ConnectionStrings:PostgresDb=User ID=$POSTGRES_LOGIN;
           Password=$POSTGRES_PASSWORD;Host=sntdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_DBNAME;Pooling=true
       - ASPNETCORE_URLS=http://+:$SNT_DEFAULTPORT

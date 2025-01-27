@@ -1,7 +1,7 @@
 # Introduction
 
 This is my own development, many technologies that I had to deal with in my work are concentrated in this repository. All this is designed in the form of a telegram bot for convenience and visual demonstration.
-
+ 
 # Core
 
 Here will be a description of root services, adapters and controllers

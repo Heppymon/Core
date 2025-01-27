@@ -58,7 +58,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=$ASPNETCORE_ENVIRONMENT
   #    - ConnectionStrings:Postgres=User ID=$POSTGRES_LOGIN;Password=$POSTGRES_PASSWORD;Host=tgbotdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_SNT;Pooling=true
   #    - ConnectionStrings:PostgresRoot=User ID=$POSTGRES_LOGIN;Password=$POSTGRES_PASSWORD;Host=tgbotdb;Port=$POSTGRES_DEFAULTPORT;Database=$POSTGRES_SNT_ROOT;Pooling=true
-      - ASPNETCORE_URLS=http://+:$SNT_DEFAULTPORT
+      - ASPNETCORE_URLS=https://+:$SNT_DEFAULTPORT
     ports:
       - mode: host
         protocol: tcp

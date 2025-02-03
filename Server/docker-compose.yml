@@ -90,6 +90,50 @@ services:
       - tgbot
     restart: always
 
+  minio:
+    container_name: tgbotminio
+    image: minio/minio:RELEASE.2023-10-25T06-33-25Z # Фиксированная версия MinIO
+    environment:
+      - MINIO_ROOT_USER=$MINIO_ROOT_USER
+      - MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
+    volumes:
+      - minio_data:/data
+    ports:
+      - mode: host
+        protocol: tcp
+        published: $MINIO_PORT
+        target: 9000
+      - mode: host
+        protocol: tcp
+        published: $MINIO_CONSOLE_PORT
+        target: 9001
+    networks:
+      - tgbot
+    restart: always
+    command: server /data --console-address ":9001"
+
+  minio-setup:
+    image: minio/mc
+    container_name: minio-setup
+    networks:
+      - tgbot
+    depends_on:
+      - minio
+    volumes:
+      - /minio.config:/conf
+    entrypoint: >
+      /bin/sh -c "
+      apk add --no-cache bash;
+      /conf/wait-for-it.sh minio:9000;
+      /usr/bin/mc config host add minio http://minio:9000 minio 5vdurVstYYMfZ96n;
+      /usr/bin/mc mb -p minio/media;
+      /usr/bin/mc admin policy add minio wpolicy /conf/setup.json;
+      /usr/bin/mc admin user add minio snt 5vdurVstYYMfZ96n;
+      /usr/bin/mc admin policy set minio wpolicy user=srfun;
+      /usr/bin/mc policy set-json /conf/anonymous.json minio/media;
+      exit 0;
+      "
+
   logs:
     container_name: tgbotlogs
     image: amir20/dozzle:v4.6.3
@@ -117,4 +161,6 @@ volumes:
   pgconf:
     driver: local
   pglog:
+    driver: local
+  minio_data:
     driver: local

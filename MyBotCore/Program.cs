@@ -104,7 +104,7 @@ namespace MyBotCore
             // loggerConfiguration.Enrich.WithMachineName();
             if (!string.IsNullOrEmpty(loggerSettings.ApplicationName))
                 loggerConfiguration.Enrich.WithProperty("ApplicationName", loggerSettings.ApplicationName);
-             
+            
             var logBasePath = Environment.GetEnvironmentVariable("APP_LOG_PATH");
             if (string.IsNullOrEmpty(logBasePath))
                 logBasePath = loggerSettings.FilePath;

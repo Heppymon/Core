@@ -7,6 +7,7 @@ namespace MyBotCore
 {
     internal class Program
     {
+
         public static void Main(string[] args)
         {
             var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Local";

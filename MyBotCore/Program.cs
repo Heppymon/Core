@@ -3,6 +3,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 
+
 namespace MyBotCore
 {
     internal class Program
